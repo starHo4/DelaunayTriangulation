@@ -74,100 +74,7 @@ void Game::Render()
 
 void Game::MakeDelaunay()
 {
-    
 }
-
-// vector<PVector> Points(param->N);
-//     for (int i = 0; i < param->N; i++)
-//     {
-//         Points[i] = flock->getAgent(i).getPos();
-//     }
-//     // Make a huge triangle which includes all points.
-//     double width = param->FIELD_W;
-//     double height = param->FIELD_H;
-//     PVector v1 = NewVec(width / 2, -width * sin(PI / 3));
-//     PVector v2 = NewVec(-height / tan(PI / 3), height);
-//     PVector v3 = NewVec(width + height / tan(PI / 3), height);
-//     Triangle init_tri(v1, v2, v3);
-//     // Push back a huge triangle into "triangles"
-//     triangles.push_back(init_tri);
-//     // Main Loop of Delaunay Algorithm.
-//     for(int n = 0; n < Points.size(); n+;)
-//     {
-//         int index_inP;
-//         // Find a triangle which includes the point P.
-//         for (int i = 0; i < triangles.size(); i++)
-//         {
-//             Circle tmp_Circle;
-//             tmp_Circle.CalcCircle(triangles[i]);
-//             if (Dist(tmp_Circle.center, P) <= tmp_Circle.radius)
-//             {
-//                 index_inP = i;
-//                 break;
-//             }
-//         }
-//         Triangle tmp_tri = triangles[index_inP];
-//         triangles.push_back(Triangle(tmp_tri.Vertex[0], tmp_tri.Vertex[1], P));
-//         triangles.push_back(Triangle(tmp_tri.Vertex[0], P, tmp_tri.Vertex[2]));
-//         triangles.push_back(Triangle(P, tmp_tri.Vertex[1], tmp_tri.Vertex[2]));
-//         triangles.erase(triangles.begin() + index_inP);
-//         stack<vector<PVector>> S;
-//         S.push(vector<PVector>{tmp_tri.Vertex[0], tmp_tri.Vertex[1]});
-//         S.push(vector<PVector>{tmp_tri.Vertex[1], tmp_tri.Vertex[2]});
-//         S.push(vector<PVector>{tmp_tri.Vertex[2], tmp_tri.Vertex[0]});
-//         while (!S.empty())
-//         {
-//             vector<PVector> AB = S.top();
-//             S.pop();
-//             PVector A = AB[0];
-//             PVector B = AB[1];
-//             int index_tri1 = -1;
-//             int index_tri2 = -1;
-//             for (int i = 0; i < triangles.size(); i++)
-//             {
-
-//                 if (triangles[i].includeEdge(AB))
-//                 {
-//                     index_tri1 = i;
-//                     break;
-//                 }
-//             }
-//             for (int i = 0; i < triangles.size(); i++)
-//             {
-
-//                 if (triangles[i].includeEdge(AB) && i != index_tri1)
-//                 {
-//                     index_tri2 = i;
-//                     break;
-//                 }
-//             }
-
-//             if (index_tri2 == -1)
-//             {
-//                 continue;
-//             }
-
-//             Triangle tri_ABC = triangles[index_tri1];
-//             Triangle tri_ABD = triangles[index_tri2];
-//             Circle circle_ABC;
-//             circle_ABC.CalcCircle(tri_ABC);
-//             PVector C = tri_ABC.findVertex(A, B);
-//             PVector D = tri_ABD.findVertex(A, B);
-//             if (Dist(circle_ABC.center, D) <= circle_ABC.radius)
-//             {
-//                 // Flipping.
-//                 triangles.push_back(Triangle(A, C, D));
-//                 triangles.push_back(Triangle(B, C, D));
-//                 triangles.erase(triangles.begin() + index_tri1);
-//                 triangles.erase(triangles.begin() + index_tri2);
-
-//                 S.push(vector<PVector>{A, C});
-//                 S.push(vector<PVector>{A, D});
-//                 S.push(vector<PVector>{B, C});
-//                 S.push(vector<PVector>{B, D});
-//             }
-//         }
-//     }
 
 void Game::DrawTri()
 {
@@ -188,18 +95,22 @@ void Game::DrawTri()
 
 void Game::DrawCircle()
 {
-    // if (ccircle->radius > 0)
-    // {
-    //     double c_radius = ccircle->radius;
-    //     PVector c_center = ccircle->center;
-    //     sf::CircleShape circle(c_radius, c_radius * 10);
-    //     circle.setPosition(c_center.x - c_radius, c_center.y - c_radius);
-    //     circle.setOutlineColor(sf::Color::Red);
-    //     circle.setOutlineThickness(1.5);
-    //     circle.setFillColor(sf::Color::Transparent);
+    for (int i = 0; i < circles.size(); i++)
+    {
+        Circle ccircle = circles[i];
+        if (ccircle.radius > 0)
+        {
+            double c_radius = ccircle.radius;
+            PVector c_center = ccircle.center;
+            sf::CircleShape circle(c_radius, c_radius * 10);
+            circle.setPosition(c_center.x - c_radius, c_center.y - c_radius);
+            circle.setOutlineColor(sf::Color::White);
+            circle.setOutlineThickness(1.5);
+            circle.setFillColor(sf::Color::Transparent);
 
-    //     window.draw(circle);
-    // }
+            window.draw(circle);
+        }
+    }
 }
 
 void Game::DrawFlock()

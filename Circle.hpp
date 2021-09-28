@@ -8,6 +8,7 @@ class Circle
 private:
 public:
     Circle();
+    Circle(Triangle &tri);
 
     double radius;
     PVector center;
