@@ -11,7 +11,7 @@ struct Parameter
 
     // Parameter
     const unsigned int maxTimesteps = 1000;
-    const unsigned int N = 5;
+    const unsigned int N = 15;
 
     // For SFML
     const unsigned int FPS = 10;

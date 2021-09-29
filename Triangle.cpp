@@ -45,3 +45,43 @@ bool Triangle::isVertex(const PVector &P)
     }
     return false;
 }
+
+bool Triangle::isEdge(const vector<PVector> &AB)
+{
+    PVector A = AB[0];
+    PVector B = AB[1];
+    for (int i = 0; i < 3; i++)
+    {
+        if ((Edges[i][0] == A && Edges[i][1] == B) || (Edges[i][0] == B && Edges[i][1] == A))
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+PVector Triangle::otherVertex(const vector<PVector> &AB)
+{
+    if (!isEdge(AB))
+    {
+        cout << "Error when using Triangle::otherVertex()." << endl;
+        exit(0);
+    }
+    PVector A = AB[0];
+    PVector B = AB[1];
+    int index_otherAB = -1;
+    for (int i = 0; i < 3; i++)
+    {
+        if (Vertex[i] != A && Vertex[i] != B)
+        {
+            index_otherAB = i;
+            break;
+        }
+    }
+    return Vertex[index_otherAB];
+}
+
+bool Triangle::operator==(const Triangle &tri)
+{
+    return (this->isVertex(tri.Vertex[0]) && this->isVertex(tri.Vertex[1]) && this->isVertex(tri.Vertex[2]));
+}

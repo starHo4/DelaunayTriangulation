@@ -39,7 +39,7 @@ void Game::Run()
 
 void Game::MainProcess()
 {
-    // flock->flocking(mt);
+    flock->flocking(mt);
 
     // Make a delaunay triangles.
     MakeDelaunay();
@@ -78,6 +78,8 @@ void Game::Render()
 
 void Game::MakeDelaunay()
 {
+    // Init triangles.
+    triangles.clear();
     // Vector of PVector (coordination of agents position)
     vector<PVector> Points(param->N);
     for (int i = 0; i < param->N; i++)
@@ -117,10 +119,69 @@ void Game::MakeDelaunay()
         S.push(vector<PVector>{tri_inP.Vertex[0], tri_inP.Vertex[1]});
         S.push(vector<PVector>{tri_inP.Vertex[1], tri_inP.Vertex[2]});
         S.push(vector<PVector>{tri_inP.Vertex[2], tri_inP.Vertex[0]});
-
-
-        // while ...
-
+        // Judge the triangulation and flipping
+        while (!S.empty())
+        {
+            vector<PVector> AB = S.top();
+            S.pop();
+            // Find two triangles which has AB as an edge.
+            int index_ABC = -1;
+            int index_ABD = -1;
+            for (int i = 0; i < triangles.size(); i++)
+            {
+                if (triangles[i].isEdge(AB))
+                {
+                    index_ABC = i;
+                    break;
+                }
+            }
+            for (int i = 0; i < triangles.size(); i++)
+            {
+                if (triangles[i].isEdge(AB) && i != index_ABC)
+                {
+                    index_ABD = i;
+                    break;
+                }
+            }
+            // If there are not two triangles which has AB as an edge, flipping process will be skipped.
+            if (index_ABD == -1)
+            {
+                continue;
+            }
+            // Two triangles that have a common edge, AB.
+            Triangle ABC = triangles[index_ABC];
+            Triangle ABD = triangles[index_ABD];
+            PVector A = AB[0];
+            PVector B = AB[1];
+            PVector C = ABC.otherVertex(AB);
+            PVector D = ABD.otherVertex(AB);
+            // Make circumscribed circle of ABC.
+            Circle ccircle(ABC);
+            // Judge the edge AB whether or not it must be flipped.
+            if (Dist(ccircle.center, D) < ccircle.radius)
+            {
+                // Flipping process.
+                triangles.push_back(Triangle(A, C, D));
+                triangles.push_back(Triangle(B, C, D));
+                // Erase ABC and ABD from 'triangles'.
+                for (auto itr = triangles.begin(); itr != triangles.end();)
+                {
+                    if (*itr == Triangle(A, B, C) || *itr == Triangle(A, B, D))
+                    {
+                        itr = triangles.erase(itr);
+                    }
+                    else
+                    {
+                        itr++;
+                    }
+                }
+                // Push edges of a quad of ACBD into stack S.
+                S.push(vector<PVector>{A, C});
+                S.push(vector<PVector>{C, B});
+                S.push(vector<PVector>{B, D});
+                S.push(vector<PVector>{D, A});
+            }
+        }
     }
     // Remove the initial huge triangle and the regarding triangles.
     auto itr = triangles.begin();

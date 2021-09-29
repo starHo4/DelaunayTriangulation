@@ -23,9 +23,15 @@ public:
 
     // Judge whether or not this triangle includes a point.
     bool includePoint(const PVector &point);
-
     // Judge whether or not this triangle have P as a vertex.
     bool isVertex(const PVector &point);
+    // Judge whether or not this triangle have AB as a Edge.
+    bool isEdge(const vector<PVector> &AB);
+
+    // Return coordination of vertex of this triangle, not being vertex including AB.
+    PVector otherVertex(const vector<PVector> &AB);
+
+    bool operator==(const Triangle &tri);
 };
 
 #endif
