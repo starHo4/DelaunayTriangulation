@@ -25,20 +25,24 @@ Game::Game()
 void Game::Run()
 {
     // Main Loop
-    while (window.isOpen())
+    for (int t = 0; t < param->maxTimesteps; t++)
     {
         HandleInput();
         MainProcess();
         Render();
+        if (!window.isOpen())
+        {
+            break;
+        }
     }
 }
 
 void Game::MainProcess()
 {
-    flock->flocking(mt);
+    // flock->flocking(mt);
 
     // Make a delaunay triangles.
-    // MakeDelaunay();
+    MakeDelaunay();
 }
 
 void Game::HandleInput()
@@ -74,6 +78,64 @@ void Game::Render()
 
 void Game::MakeDelaunay()
 {
+    // Vector of PVector (coordination of agents position)
+    vector<PVector> Points(param->N);
+    for (int i = 0; i < param->N; i++)
+    {
+        Points[i] = flock->getAgent(i).getPos();
+    }
+    // Make a huge inital triangle.
+    double width = (double)param->FIELD_W;
+    double height = (double)param->FIELD_H;
+    PVector p1 = NewVec(width / 2, -width * sin(PI / 3));
+    PVector p2 = NewVec(-height / tan(PI / 3), height);
+    PVector p3 = NewVec(width + height / tan(PI / 3), height);
+    Triangle init_tri(p1, p2, p3);
+    triangles.push_back(init_tri);
+    // Main processing of Delaunay triangulation
+    for (int i = 0; i < Points.size(); i++)
+    {
+        PVector P = Points[i];
+        // Find a triangle which includes the point P.
+        int index_inP;
+        for (int i = 0; i < triangles.size(); i++)
+        {
+            if (triangles[i].includePoint(P))
+            {
+                index_inP = i;
+                break;
+            }
+        }
+        Triangle tri_inP = triangles[index_inP];
+        // Devide the triangle which includes P into three triangles for Delaunay triangulation.
+        triangles.push_back(Triangle(tri_inP.Vertex[0], tri_inP.Vertex[1], P));
+        triangles.push_back(Triangle(P, tri_inP.Vertex[1], tri_inP.Vertex[2]));
+        triangles.push_back(Triangle(tri_inP.Vertex[0], P, tri_inP.Vertex[2]));
+        triangles.erase(triangles.begin() + index_inP);
+        // Temporary stack which have sides of tri_inP.
+        stack<vector<PVector>> S;
+        S.push(vector<PVector>{tri_inP.Vertex[0], tri_inP.Vertex[1]});
+        S.push(vector<PVector>{tri_inP.Vertex[1], tri_inP.Vertex[2]});
+        S.push(vector<PVector>{tri_inP.Vertex[2], tri_inP.Vertex[0]});
+
+
+        // while ...
+
+    }
+    // Remove the initial huge triangle and the regarding triangles.
+    auto itr = triangles.begin();
+    while (itr != triangles.end())
+    {
+        if (itr->isVertex(p1) || itr->isVertex(p2) || itr->isVertex(p3))
+        {
+            // cout << itr->Vertex[0].x << ", " << itr->Vertex[0].y << endl;
+            itr = triangles.erase(itr);
+        }
+        else
+        {
+            itr++;
+        }
+    }
 }
 
 void Game::DrawTri()

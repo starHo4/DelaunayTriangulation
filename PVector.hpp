@@ -6,6 +6,16 @@
 struct PVector
 {
     double x, y;
+
+    // Constructors
+    PVector() {}
+    PVector(double _x, double _y)
+    {
+        x = _x;
+        y = _y;
+    }
+
+    // whether or not this vector is another vector.
     bool operator==(const PVector &v) const
     {
         return (x == v.x && y == v.y);
@@ -13,6 +23,20 @@ struct PVector
     bool operator!=(const PVector &v) const
     {
         return (x != v.x || y != v.y);
+    }
+    // Instead of Add function, operator '+'.
+    PVector operator+(const PVector &v) const
+    {
+        double _x = x + v.x;
+        double _y = y + v.y;
+        return PVector(_x, _y);
+    }
+    // Instead of Diff function, operator '-'.
+    PVector operator-(const PVector &v) const
+    {
+        double _x = x - v.x;
+        double _y = y - v.y;
+        return PVector(_x, _y);
     }
 };
 

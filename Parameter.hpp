@@ -7,11 +7,11 @@ struct Parameter
     Parameter(){}
 
     // Random seed
-    const unsigned int RANDOM_SEED = 0;
+    const unsigned int RANDOM_SEED = 213;
 
     // Parameter
     const unsigned int maxTimesteps = 1000;
-    const unsigned int N = 10;
+    const unsigned int N = 5;
 
     // For SFML
     const unsigned int FPS = 10;

@@ -2,7 +2,7 @@
 
 Circle::Circle()
 {
-    radius = 10;
+    radius = 0;
     center = NewVec(0, 0);
 }
 

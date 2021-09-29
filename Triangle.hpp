@@ -21,11 +21,11 @@ public:
     // Edges
     vector<vector<PVector>> Edges;
 
-    PVector findVertex(PVector v1, PVector v2);
-    bool includeEdge(vector<PVector> AB);
+    // Judge whether or not this triangle includes a point.
+    bool includePoint(const PVector &point);
 
-    // Triangle generation
-    void generate(mt19937_64 &mt, const int w, const int h);
+    // Judge whether or not this triangle have P as a vertex.
+    bool isVertex(const PVector &point);
 };
 
 #endif
